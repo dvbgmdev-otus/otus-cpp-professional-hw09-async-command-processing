@@ -1,0 +1,25 @@
+/** @file namespaces.dox
+ *  @brief Документация пространств имён проекта.
+ */
+
+/** @page namespaces_page Пространства имён
+ *
+ *  Проект не вводит собственные именованные пространства имён.
+ *
+ *  Публичные типы и функции размещены в глобальном пространстве имён:
+ *
+ *  - AppStreams
+ *  - run_app()
+ *  - CliArgsParseResult
+ *  - parse_cli_args()
+ *  - CommandBlock
+ *  - CommandReader
+ *  - BulkProcessor
+ *  - format_bulk()
+ *  - ConsoleBulkWriter
+ *  - FileBulkWriter
+ *
+ *  Внутренние вспомогательные функции, не являющиеся частью публичного API,
+ *  размещены в анонимных пространствах имён внутри соответствующих `.cpp`
+ *  файлов.
+ */
