@@ -15,6 +15,12 @@ if(1) # PROJECT CONFIG BLOCK
 
     set(PROJECT_INCLUDE_DIR
         ${SRC_DIR}
+        ${SRC_DIR}/app
+        ${SRC_DIR}/cli
+        ${SRC_DIR}/core
+        ${SRC_DIR}/format
+        ${SRC_DIR}/io
+        ${SRC_DIR}/utils
     )
 
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -32,21 +38,21 @@ if(1) # CORE LIBRARY BLOCK
     set(CORE_SRC ${CORE_NAME}_SRC)
 
     set(${CORE_SRC}
-        ${SRC_DIR}/app.cpp
-        ${SRC_DIR}/bulk_format.cpp
-        ${SRC_DIR}/bulk_processor.cpp
-        ${SRC_DIR}/bulk_writer.cpp
-        ${SRC_DIR}/cli_args.cpp
-        ${SRC_DIR}/command_reader.cpp
+        ${SRC_DIR}/app/app.cpp
+        ${SRC_DIR}/format/bulk_format.cpp
+        ${SRC_DIR}/core/bulk_processor.cpp
+        ${SRC_DIR}/io/bulk_writer.cpp
+        ${SRC_DIR}/cli/cli_args.cpp
+        ${SRC_DIR}/io/command_reader.cpp
     )
 
     set(COVERAGE_SRC
-        ${SRC_DIR}/app.cpp
-        ${SRC_DIR}/bulk_format.cpp
-        ${SRC_DIR}/bulk_processor.cpp
-        ${SRC_DIR}/bulk_writer.cpp
-        ${SRC_DIR}/cli_args.cpp
-        ${SRC_DIR}/command_reader.cpp
+        ${SRC_DIR}/app/app.cpp
+        ${SRC_DIR}/format/bulk_format.cpp
+        ${SRC_DIR}/core/bulk_processor.cpp
+        ${SRC_DIR}/io/bulk_writer.cpp
+        ${SRC_DIR}/cli/cli_args.cpp
+        ${SRC_DIR}/io/command_reader.cpp
     )
 
     if(${CORE_SRC})
@@ -80,7 +86,7 @@ endif()
 
 if(1) # MAIN APPLICATION BLOCK
     add_executable(${PROJECT_NAME}
-        ${SRC_DIR}/main.cpp
+        ${SRC_DIR}/app/main.cpp
     )
 
     target_link_libraries(${PROJECT_NAME} PRIVATE ${CORE_NAME})
@@ -91,7 +97,7 @@ if(1) # MAIN APPLICATION BLOCK
         target_compile_definitions(${PROJECT_NAME} PRIVATE ENABLE_DEBUG_LOG)
     endif()
 
-    list(APPEND COVERAGE_SRC ${SRC_DIR}/main.cpp)
+    list(APPEND COVERAGE_SRC ${SRC_DIR}/app/main.cpp)
 
     if (BUILD_COVERAGE)
         target_compile_options(${PROJECT_NAME} PRIVATE ${COVERAGE_COMPILE_FLAGS})
