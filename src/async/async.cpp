@@ -64,6 +64,8 @@ void disconnect(handle_t handle) {
 
     context->disconnect();
     delete context;
+
+    AsyncRuntime::instance().wait();
 }
 
 }  // namespace async

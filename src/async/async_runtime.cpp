@@ -9,20 +9,91 @@ AsyncRuntime& AsyncRuntime::instance() {
     return runtime;
 }
 
-AsyncRuntime::AsyncRuntime() : m_output(&std::cout) {}
+AsyncRuntime::AsyncRuntime() : m_output(&std::cout) {
+    m_log_thread = std::thread(&AsyncRuntime::run_console_worker, this);
+    m_file_thread1 = std::thread(&AsyncRuntime::run_file_worker, this);
+    m_file_thread2 = std::thread(&AsyncRuntime::run_file_worker, this);
+}
+
+AsyncRuntime::~AsyncRuntime() {
+    wait();
+
+    m_console_queue.close();
+    m_file_queue.close();
+
+    if (m_log_thread.joinable()) {
+        m_log_thread.join();
+    }
+    if (m_file_thread1.joinable()) {
+        m_file_thread1.join();
+    }
+    if (m_file_thread2.joinable()) {
+        m_file_thread2.join();
+    }
+}
 
 void AsyncRuntime::publish(const CommandBlock& block) {
-    ConsoleBulkWriter console_writer(*m_output);
-    FileBulkWriter file_writer;
+    add_pending_tasks(2);
 
-    console_writer.write(block);
-    file_writer.write(block);
+    if (!m_console_queue.push(block)) {
+        complete_pending_task();
+    }
+    if (!m_file_queue.push(block)) {
+        complete_pending_task();
+    }
+}
+
+void AsyncRuntime::wait() {
+    std::unique_lock<std::mutex> lock(m_pending_mutex);
+    m_pending_condition.wait(lock, [this]() { return m_pending_tasks == 0; });
 }
 
 void AsyncRuntime::set_output(std::ostream& output) {
+    std::lock_guard<std::mutex> lock(m_output_mutex);
     m_output = &output;
 }
 
 std::ostream& AsyncRuntime::output() const {
+    std::lock_guard<std::mutex> lock(m_output_mutex);
     return *m_output;
+}
+
+void AsyncRuntime::run_console_worker() {
+    CommandBlock block;
+    while (m_console_queue.pop(block)) {
+        write_console(block);
+        complete_pending_task();
+    }
+}
+
+void AsyncRuntime::run_file_worker() {
+    CommandBlock block;
+    while (m_file_queue.pop(block)) {
+        write_file(block);
+        complete_pending_task();
+    }
+}
+
+void AsyncRuntime::write_console(const CommandBlock& block) {
+    std::lock_guard<std::mutex> lock(m_output_mutex);
+    ConsoleBulkWriter writer(*m_output);
+    writer.write(block);
+}
+
+void AsyncRuntime::write_file(const CommandBlock& block) {
+    FileBulkWriter writer;
+    writer.write(block);
+}
+
+void AsyncRuntime::add_pending_tasks(std::size_t count) {
+    std::lock_guard<std::mutex> lock(m_pending_mutex);
+    m_pending_tasks += count;
+}
+
+void AsyncRuntime::complete_pending_task() {
+    {
+        std::lock_guard<std::mutex> lock(m_pending_mutex);
+        --m_pending_tasks;
+    }
+    m_pending_condition.notify_all();
 }
