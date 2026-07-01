@@ -27,17 +27,29 @@ protected:
             argc, argv, AppStreams{ input, output, error }, [this]() { return next_time(); });
     }
 
-    std::string read_log_file(const std::string& file_name) const {
-        std::ifstream input_file(file_name);
-        std::ostringstream content;
-        content << input_file.rdbuf();
-        return content.str();
+    std::string read_async_log_file(std::time_t timestamp) const {
+        for (std::size_t index = 1; index <= max_test_log_index; ++index) {
+            const std::string file_name =
+                "bulk" + std::to_string(timestamp) + "_" + std::to_string(index) + ".log";
+            std::ifstream input_file(file_name);
+            if (input_file.is_open()) {
+                std::ostringstream content;
+                content << input_file.rdbuf();
+                return content.str();
+            }
+        }
+        return {};
     }
 
     void remove_log_files() const {
         for (std::time_t timestamp = 100; timestamp < 120; ++timestamp) {
             const std::string file_name = "bulk" + std::to_string(timestamp) + ".log";
             std::remove(file_name.c_str());
+            for (std::size_t index = 1; index <= max_test_log_index; ++index) {
+                const std::string postfixed_file_name = "bulk" + std::to_string(timestamp) + "_" +
+                                                       std::to_string(index) + ".log";
+                std::remove(postfixed_file_name.c_str());
+            }
         }
     }
 
@@ -46,6 +58,8 @@ protected:
     std::ostringstream error;
 
 private:
+    static const std::size_t max_test_log_index = 100;
+
     std::size_t m_clock_calls = 0;
 };
 
@@ -58,7 +72,7 @@ TEST_F(AppTest, Run_WhenStaticBlockComplete_WritesConsoleAndFile) {
     EXPECT_EQ(0, exit_code);
     EXPECT_EQ("bulk: cmd1, cmd2, cmd3\n", output.str());
     EXPECT_TRUE(error.str().empty());
-    EXPECT_EQ("bulk: cmd1, cmd2, cmd3\n", read_log_file("bulk100.log"));
+    EXPECT_EQ("bulk: cmd1, cmd2, cmd3\n", read_async_log_file(100));
 }
 
 // 1.2 Приложение завершает неполный статический блок при конце ввода.
@@ -68,7 +82,7 @@ TEST_F(AppTest, Run_WhenInputEnds_WritesIncompleteStaticBlock) {
     EXPECT_EQ(0, exit_code);
     EXPECT_EQ("bulk: cmd1, cmd2\n", output.str());
     EXPECT_TRUE(error.str().empty());
-    EXPECT_EQ("bulk: cmd1, cmd2\n", read_log_file("bulk100.log"));
+    EXPECT_EQ("bulk: cmd1, cmd2\n", read_async_log_file(100));
 }
 
 // 1.3 Приложение обрабатывает динамический блок и завершает предыдущий статический.
@@ -78,8 +92,8 @@ TEST_F(AppTest, Run_WhenDynamicBlockUsed_WritesStaticAndDynamicBlocks) {
     EXPECT_EQ(0, exit_code);
     EXPECT_EQ("bulk: cmd1, cmd2\nbulk: cmd3, cmd4\n", output.str());
     EXPECT_TRUE(error.str().empty());
-    EXPECT_EQ("bulk: cmd1, cmd2\n", read_log_file("bulk100.log"));
-    EXPECT_EQ("bulk: cmd3, cmd4\n", read_log_file("bulk103.log"));
+    EXPECT_EQ("bulk: cmd1, cmd2\n", read_async_log_file(100));
+    EXPECT_EQ("bulk: cmd3, cmd4\n", read_async_log_file(103));
 }
 
 #endif

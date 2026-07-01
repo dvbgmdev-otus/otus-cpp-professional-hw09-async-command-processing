@@ -81,8 +81,9 @@ void AsyncRuntime::write_console(const CommandBlock& block) {
 }
 
 void AsyncRuntime::write_file(const CommandBlock& block) {
+    const std::size_t file_index = ++m_file_index;
     FileBulkWriter writer;
-    writer.write(block);
+    writer.write(block, file_index);
 }
 
 void AsyncRuntime::add_pending_tasks(std::size_t count) {

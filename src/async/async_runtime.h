@@ -6,6 +6,7 @@
  * @brief Runtime вывода готовых блоков async.
  */
 
+#include <atomic>
 #include <condition_variable>
 #include <cstddef>
 #include <iosfwd>
@@ -96,6 +97,9 @@ private:
 
     /// Количество опубликованных, но ещё не обработанных задач вывода.
     std::size_t m_pending_tasks = 0;
+
+    /// Счётчик для уникальных имён log-файлов.
+    std::atomic<std::size_t> m_file_index{ 0 };
 };
 
 #endif  // ASYNC_RUNTIME_H

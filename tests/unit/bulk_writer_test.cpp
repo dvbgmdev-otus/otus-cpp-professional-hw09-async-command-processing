@@ -25,9 +25,20 @@ protected:
         return content.str();
     }
 
-    void remove_log_file() const { std::remove(log_file_name.c_str()); }
+    std::string read_postfixed_log_file() const {
+        std::ifstream input(postfixed_log_file_name);
+        std::ostringstream content;
+        content << input.rdbuf();
+        return content.str();
+    }
+
+    void remove_log_file() const {
+        std::remove(log_file_name.c_str());
+        std::remove(postfixed_log_file_name.c_str());
+    }
 
     const std::string log_file_name = "bulk123.log";
+    const std::string postfixed_log_file_name = "bulk123_7.log";
 };
 
 #if (1)  // 1. Вывод в консоль
@@ -60,6 +71,16 @@ TEST_F(BulkWriterTest, FileWriter_WhenBlockWritten_WritesBulkLine) {
     const CommandBlock block{ { "cmd1", "cmd2" }, 123 };
     writer.write(block);
     EXPECT_EQ("bulk: cmd1, cmd2\n", read_log_file());
+}
+
+// 2.3 Файловый writer добавляет постфикс к имени файла.
+TEST_F(BulkWriterTest, FileWriter_WhenPostfixPassed_CreatesPostfixedFile) {
+    FileBulkWriter writer;
+    const CommandBlock block{ { "cmd1", "cmd2" }, 123 };
+    writer.write(block, 7);
+    std::ifstream input(postfixed_log_file_name);
+    EXPECT_TRUE(input.is_open());
+    EXPECT_EQ("bulk: cmd1, cmd2\n", read_postfixed_log_file());
 }
 
 #endif

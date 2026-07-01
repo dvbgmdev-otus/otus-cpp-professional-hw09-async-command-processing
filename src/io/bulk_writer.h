@@ -6,6 +6,7 @@
  * @brief Вывод готовых блоков команд.
  */
 
+#include <cstddef>
 #include <ostream>
 
 #include "command_block.h"
@@ -50,6 +51,16 @@ public:
      * @param block Готовый блок команд.
      */
     void write(const CommandBlock& block);
+
+    /**
+     * @brief Записывает блок команд в файл с дополнительным постфиксом.
+     *
+     * Имя файла формируется как `bulk<timestamp>_<postfix>.log`.
+     *
+     * @param block Готовый блок команд.
+     * @param postfix Уникальный постфикс имени файла.
+     */
+    void write(const CommandBlock& block, std::size_t postfix);
 };
 
 #endif  // BULK_WRITER_H
