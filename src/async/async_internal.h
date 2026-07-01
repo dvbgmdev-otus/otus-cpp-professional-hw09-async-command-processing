@@ -31,7 +31,7 @@ public:
     ScopedSettings& operator=(const ScopedSettings&) = delete;
 
 private:
-    std::ostream* m_previous_output;
+    std::ostream& m_previous_output;
     Clock m_previous_clock;
 };
 

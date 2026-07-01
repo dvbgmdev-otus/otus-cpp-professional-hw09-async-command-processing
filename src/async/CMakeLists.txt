@@ -8,6 +8,7 @@ set(ASYNC_NAME async)
 add_library(${ASYNC_NAME} SHARED
     async.cpp
     async_context.cpp
+    async_runtime.cpp
 )
 
 target_include_directories(${ASYNC_NAME} PUBLIC
