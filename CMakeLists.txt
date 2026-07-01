@@ -37,16 +37,6 @@ endif()
 if(1) # CORE LIBRARY BLOCK
     set(CORE_NAME ${PROJECT_NAME}_CORE)
 
-    set(CORE_SRC ${CORE_NAME}_SRC)
-
-    set(${CORE_SRC}
-        ${SRC_DIR}/core/format/bulk_format.cpp
-        ${SRC_DIR}/core/bulk_processor.cpp
-        ${SRC_DIR}/core/io/bulk_writer.cpp
-        ${SRC_DIR}/core/cli/cli_args.cpp
-        ${SRC_DIR}/core/io/command_reader.cpp
-    )
-
     set(COVERAGE_SRC
         ${SRC_DIR}/app/app.cpp
         ${SRC_DIR}/async/async.cpp
@@ -58,37 +48,7 @@ if(1) # CORE LIBRARY BLOCK
         ${SRC_DIR}/core/io/command_reader.cpp
     )
 
-    if(${CORE_SRC})
-        add_library(${CORE_NAME} ${${CORE_SRC}})
-
-        set_target_properties(${CORE_NAME} PROPERTIES
-            POSITION_INDEPENDENT_CODE ON
-        )
-
-        target_include_directories(${CORE_NAME} PUBLIC
-            ${PROJECT_INCLUDE_DIR}
-        )
-
-        target_compile_options(${CORE_NAME} PRIVATE ${WARN_FLAGS})
-
-        if(BUILD_COVERAGE)
-            target_compile_options(${CORE_NAME} PRIVATE ${COVERAGE_COMPILE_FLAGS})
-        endif()
-
-        if(ENABLE_DEBUG_LOG)
-            target_compile_definitions(${CORE_NAME} PRIVATE ENABLE_DEBUG_LOG)
-        endif()
-    else()
-        add_library(${CORE_NAME} INTERFACE)
-
-        target_include_directories(${CORE_NAME} INTERFACE
-            ${PROJECT_INCLUDE_DIR}
-        )
-
-        if(ENABLE_DEBUG_LOG)
-            target_compile_definitions(${CORE_NAME} INTERFACE ENABLE_DEBUG_LOG)
-        endif()
-    endif()
+    add_subdirectory(${SRC_DIR}/core ${CMAKE_BINARY_DIR}/core)
 endif()
 
 if(1) # ASYNC LIBRARY BLOCK

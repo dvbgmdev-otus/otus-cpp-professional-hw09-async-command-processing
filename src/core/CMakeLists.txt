@@ -1,0 +1,46 @@
+# ==========================================
+# @file src/core/CMakeLists.txt
+# Build core library
+# ==========================================
+
+set(CORE_SRC ${CORE_NAME}_SRC)
+
+set(${CORE_SRC}
+    format/bulk_format.cpp
+    bulk_processor.cpp
+    io/bulk_writer.cpp
+    cli/cli_args.cpp
+    io/command_reader.cpp
+)
+
+if(${CORE_SRC})
+    add_library(${CORE_NAME} ${${CORE_SRC}})
+
+    set_target_properties(${CORE_NAME} PROPERTIES
+        POSITION_INDEPENDENT_CODE ON
+    )
+
+    target_include_directories(${CORE_NAME} PUBLIC
+        ${PROJECT_INCLUDE_DIR}
+    )
+
+    target_compile_options(${CORE_NAME} PRIVATE ${WARN_FLAGS})
+
+    if(BUILD_COVERAGE)
+        target_compile_options(${CORE_NAME} PRIVATE ${COVERAGE_COMPILE_FLAGS})
+    endif()
+
+    if(ENABLE_DEBUG_LOG)
+        target_compile_definitions(${CORE_NAME} PRIVATE ENABLE_DEBUG_LOG)
+    endif()
+else()
+    add_library(${CORE_NAME} INTERFACE)
+
+    target_include_directories(${CORE_NAME} INTERFACE
+        ${PROJECT_INCLUDE_DIR}
+    )
+
+    if(ENABLE_DEBUG_LOG)
+        target_compile_definitions(${CORE_NAME} INTERFACE ENABLE_DEBUG_LOG)
+    endif()
+endif()
