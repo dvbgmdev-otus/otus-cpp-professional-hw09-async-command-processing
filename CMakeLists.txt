@@ -39,7 +39,6 @@ if(1) # CORE LIBRARY BLOCK
     set(CORE_SRC ${CORE_NAME}_SRC)
 
     set(${CORE_SRC}
-        ${SRC_DIR}/app/app.cpp
         ${SRC_DIR}/format/bulk_format.cpp
         ${SRC_DIR}/core/bulk_processor.cpp
         ${SRC_DIR}/io/bulk_writer.cpp
@@ -95,14 +94,48 @@ if(1) # ASYNC LIBRARY BLOCK
     add_subdirectory(${SRC_DIR}/async ${CMAKE_BINARY_DIR}/async)
 endif()
 
+if(1) # APP LIBRARY BLOCK
+    set(APP_NAME ${PROJECT_NAME}_APP)
+
+    add_library(${APP_NAME}
+        ${SRC_DIR}/app/app.cpp
+    )
+
+    target_include_directories(${APP_NAME} PUBLIC
+        ${PROJECT_INCLUDE_DIR}
+    )
+
+    target_link_libraries(${APP_NAME} PRIVATE
+        ${CORE_NAME}
+        async
+    )
+
+    target_compile_options(${APP_NAME} PRIVATE ${WARN_FLAGS})
+
+    if(BUILD_COVERAGE)
+        target_compile_options(${APP_NAME} PRIVATE ${COVERAGE_COMPILE_FLAGS})
+        if(CMAKE_VERSION VERSION_GREATER "3.13" OR
+           CMAKE_VERSION VERSION_EQUAL "3.13")
+            target_link_options(${APP_NAME} PRIVATE ${COVERAGE_LINK_FLAGS})
+        else()
+            set_target_properties(${APP_NAME} PROPERTIES
+                LINK_FLAGS "${COVERAGE_LINK_FLAGS}"
+            )
+        endif()
+    endif()
+
+    if(ENABLE_DEBUG_LOG)
+        target_compile_definitions(${APP_NAME} PRIVATE ENABLE_DEBUG_LOG)
+    endif()
+endif()
+
 if(1) # MAIN APPLICATION BLOCK
     add_executable(${PROJECT_NAME}
         ${SRC_DIR}/app/main.cpp
     )
 
     target_link_libraries(${PROJECT_NAME} PRIVATE
-        ${CORE_NAME}
-        async
+        ${APP_NAME}
     )
 
     target_compile_options(${PROJECT_NAME} PRIVATE ${WARN_FLAGS})

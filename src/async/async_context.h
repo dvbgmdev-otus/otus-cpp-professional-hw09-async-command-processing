@@ -10,6 +10,7 @@
 #include <string>
 
 #include "bulk_processor.h"
+#include "command_reader.h"
 
 /**
  * @brief Состояние одного подключения, созданного async::connect().
@@ -23,13 +24,19 @@ public:
     /// Обработчик готового блока команд.
     using CommandBlockHandler = BulkProcessor::CommandBlockHandler;
 
+    /// Источник времени для команд.
+    using Clock = CommandReader::Clock;
+
     /**
      * @brief Создаёт контекст с заданным размером статического блока.
      *
      * @param block_size Размер статического блока команд.
      * @param command_block_handler Обработчик готовых блоков команд.
+     * @param clock Источник времени для команд.
      */
-    AsyncContext(std::size_t block_size, CommandBlockHandler command_block_handler);
+    AsyncContext(std::size_t block_size,
+                 CommandBlockHandler command_block_handler,
+                 Clock clock = Clock{});
 
     /**
      * @brief Принимает очередной фрагмент входных данных.
@@ -54,6 +61,9 @@ private:
 
     /// Processor, формирующий блоки команд для этого подключения.
     BulkProcessor m_processor;
+
+    /// Источник времени получения команд.
+    Clock m_clock;
 
     /// Накопленная часть строки, не завершённая символом перевода строки.
     std::string m_pending_line;

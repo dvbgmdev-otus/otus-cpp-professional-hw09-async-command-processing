@@ -45,9 +45,27 @@ add_unit_test(empty_test
     ${UNIT_TEST_DIR}/empty_test.cpp
 )
 
-add_unit_test(app_test
+add_executable(app_test
     ${UNIT_TEST_DIR}/app_test.cpp
 )
+
+target_link_libraries(app_test PRIVATE
+    ${APP_NAME}
+    GTest::gtest_main
+)
+
+set_target_properties(app_test PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${TEST_BIN_DIR}
+)
+
+target_compile_options(app_test PRIVATE ${WARN_FLAGS})
+
+if (BUILD_COVERAGE)
+    target_compile_options(app_test PRIVATE ${COVERAGE_COMPILE_FLAGS})
+    target_link_options(app_test PRIVATE ${COVERAGE_LINK_FLAGS})
+endif()
+
+gtest_discover_tests(app_test)
 
 add_unit_test(async_context_test
     ${UNIT_TEST_DIR}/async_context_test.cpp

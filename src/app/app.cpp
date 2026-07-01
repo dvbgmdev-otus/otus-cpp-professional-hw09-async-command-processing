@@ -1,11 +1,12 @@
 #include "app.h"
 
-#include <cstddef>
 #include <ctime>
+#include <cstddef>
+#include <istream>
 #include <utility>
 
-#include "bulk_processor.h"
-#include "bulk_writer.h"
+#include "async.h"
+#include "async_internal.h"
 #include "cli_args.h"
 
 namespace {
@@ -15,41 +16,19 @@ constexpr int EXIT_ERROR_CODE = 1;
 
 std::time_t current_time() { return std::time(nullptr); }
 
-void write_block(ConsoleBulkWriter& console_writer,
-                 FileBulkWriter& file_writer,
-                 const CommandBlock& block) {
-    console_writer.write(block);
-    file_writer.write(block);
-}
+void process_input(std::istream& input, std::size_t block_size) {
+    constexpr std::size_t BUFFER_SIZE = 4096;
+    char buffer[BUFFER_SIZE];
 
-BulkProcessor::CommandBlockHandler make_block_handler(ConsoleBulkWriter& console_writer,
-                                                      FileBulkWriter& file_writer) {
-    return [&console_writer, &file_writer](const CommandBlock& block) {
-        write_block(console_writer, file_writer, block);
-    };
-}
-
-CommandReader::CommandHandler make_command_handler(BulkProcessor& processor) {
-    return [&processor](const std::string& command, std::time_t received_at) {
-        processor.process_command(command, received_at);
-    };
-}
-
-CommandReader::FinishHandler make_finish_handler(BulkProcessor& processor) {
-    return [&processor]() { processor.finish(); };
-}
-
-void process_input(std::istream& input,
-                   std::ostream& output,
-                   std::size_t block_size,
-                   CommandReader::Clock clock) {
-    ConsoleBulkWriter console_writer(output);
-    FileBulkWriter file_writer;
-    BulkProcessor processor(block_size, make_block_handler(console_writer, file_writer));
-    CommandReader reader(
-        input, make_command_handler(processor), make_finish_handler(processor), std::move(clock));
-
-    reader.read_all();
+    async::handle_t handle = async::connect(block_size);
+    while (input) {
+        input.read(buffer, BUFFER_SIZE);
+        const std::streamsize received = input.gcount();
+        if (received > 0) {
+            async::receive(handle, buffer, static_cast<std::size_t>(received));
+        }
+    }
+    async::disconnect(handle);
 }
 
 }  // namespace
@@ -65,7 +44,8 @@ int run_app(int argc, const char* const argv[], AppStreams streams, CommandReade
         return EXIT_ERROR_CODE;
     }
 
-    process_input(streams.input, streams.output, cli_args.block_size, std::move(clock));
+    async::detail::ScopedSettings async_settings(streams.output, std::move(clock));
+    process_input(streams.input, cli_args.block_size);
 
     return EXIT_SUCCESS_CODE;
 }

@@ -9,8 +9,11 @@ std::time_t current_time() { return std::time(nullptr); }
 
 }  // namespace
 
-AsyncContext::AsyncContext(std::size_t block_size, CommandBlockHandler command_block_handler)
+AsyncContext::AsyncContext(std::size_t block_size,
+                           CommandBlockHandler command_block_handler,
+                           Clock clock)
     : m_processor(block_size, std::move(command_block_handler)),
+      m_clock(std::move(clock)),
       m_pending_line() {}
 
 void AsyncContext::receive(const char* data, std::size_t size) {
@@ -39,5 +42,9 @@ void AsyncContext::disconnect() {
 }
 
 void AsyncContext::process_line(const std::string& line) {
-    m_processor.process_command(line, current_time());
+    if (!m_clock) {
+        m_clock = current_time;
+    }
+
+    m_processor.process_command(line, m_clock());
 }
