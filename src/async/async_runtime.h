@@ -40,18 +40,6 @@ public:
      */
     void wait();
 
-    /**
-     * @brief Подменяет поток консольного вывода.
-     *
-     * Используется временно для тестируемости приложения.
-     */
-    void set_output(std::ostream& output);
-
-    /**
-     * @brief Возвращает текущий поток консольного вывода.
-     */
-    std::ostream& output() const;
-
 private:
     AsyncRuntime();
     ~AsyncRuntime();

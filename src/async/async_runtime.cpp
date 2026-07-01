@@ -48,16 +48,6 @@ void AsyncRuntime::wait() {
     m_pending_condition.wait(lock, [this]() { return m_pending_tasks == 0; });
 }
 
-void AsyncRuntime::set_output(std::ostream& output) {
-    std::lock_guard<std::mutex> lock(m_output_mutex);
-    m_output = &output;
-}
-
-std::ostream& AsyncRuntime::output() const {
-    std::lock_guard<std::mutex> lock(m_output_mutex);
-    return *m_output;
-}
-
 void AsyncRuntime::run_console_worker() {
     CommandBlock block;
     while (m_console_queue.pop(block)) {

@@ -44,7 +44,7 @@ int run_app(int argc, const char* const argv[], AppStreams streams, CommandReade
         return EXIT_ERROR_CODE;
     }
 
-    async::detail::ScopedSettings async_settings(streams.output, std::move(clock));
+    async::detail::ScopedSettings async_settings(std::move(clock));
     process_input(streams.input, cli_args.block_size);
 
     return EXIT_SUCCESS_CODE;

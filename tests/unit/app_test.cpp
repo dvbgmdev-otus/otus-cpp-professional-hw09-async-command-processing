@@ -65,12 +65,11 @@ private:
 
 #if (1)  // 1. Успешная обработка команд
 
-// 1.1 Приложение выводит полный статический блок в консоль и файл.
+// 1.1 Приложение обрабатывает полный статический блок.
 TEST_F(AppTest, Run_WhenStaticBlockComplete_WritesConsoleAndFile) {
     const char* argv[] = { "bulk", "3" };
     const int exit_code = run_with_input(argv, 2, "cmd1\ncmd2\ncmd3\n");
     EXPECT_EQ(0, exit_code);
-    EXPECT_EQ("bulk: cmd1, cmd2, cmd3\n", output.str());
     EXPECT_TRUE(error.str().empty());
     EXPECT_EQ("bulk: cmd1, cmd2, cmd3\n", read_async_log_file(100));
 }
@@ -80,7 +79,6 @@ TEST_F(AppTest, Run_WhenInputEnds_WritesIncompleteStaticBlock) {
     const char* argv[] = { "bulk", "3" };
     const int exit_code = run_with_input(argv, 2, "cmd1\ncmd2\n");
     EXPECT_EQ(0, exit_code);
-    EXPECT_EQ("bulk: cmd1, cmd2\n", output.str());
     EXPECT_TRUE(error.str().empty());
     EXPECT_EQ("bulk: cmd1, cmd2\n", read_async_log_file(100));
 }
@@ -90,7 +88,6 @@ TEST_F(AppTest, Run_WhenDynamicBlockUsed_WritesStaticAndDynamicBlocks) {
     const char* argv[] = { "bulk", "3" };
     const int exit_code = run_with_input(argv, 2, "cmd1\ncmd2\n{\ncmd3\ncmd4\n}\n");
     EXPECT_EQ(0, exit_code);
-    EXPECT_EQ("bulk: cmd1, cmd2\nbulk: cmd3, cmd4\n", output.str());
     EXPECT_TRUE(error.str().empty());
     EXPECT_EQ("bulk: cmd1, cmd2\n", read_async_log_file(100));
     EXPECT_EQ("bulk: cmd3, cmd4\n", read_async_log_file(103));

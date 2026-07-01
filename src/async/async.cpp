@@ -24,10 +24,7 @@ AsyncContext* to_context(async::handle_t handle) {
 namespace async {
 namespace detail {
 
-ScopedSettings::ScopedSettings(std::ostream& output, Clock clock)
-    : m_previous_output(AsyncRuntime::instance().output()),
-      m_previous_clock(std::move(g_clock)) {
-    AsyncRuntime::instance().set_output(output);
+ScopedSettings::ScopedSettings(Clock clock) : m_previous_clock(std::move(g_clock)) {
     g_clock = std::move(clock);
     if (!g_clock) {
         g_clock = current_time;
@@ -35,7 +32,6 @@ ScopedSettings::ScopedSettings(std::ostream& output, Clock clock)
 }
 
 ScopedSettings::~ScopedSettings() {
-    AsyncRuntime::instance().set_output(m_previous_output);
     g_clock = std::move(m_previous_clock);
 }
 
