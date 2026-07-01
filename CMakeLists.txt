@@ -131,33 +131,7 @@ if(1) # APP LIBRARY BLOCK
 endif()
 
 if(1) # MAIN APPLICATION BLOCK
-    add_executable(${PROJECT_NAME}
-        ${SRC_DIR}/main/main.cpp
-    )
-
-    target_link_libraries(${PROJECT_NAME} PRIVATE
-        ${APP_NAME}
-    )
-
-    target_compile_options(${PROJECT_NAME} PRIVATE ${WARN_FLAGS})
-
-    if(ENABLE_DEBUG_LOG)
-        target_compile_definitions(${PROJECT_NAME} PRIVATE ENABLE_DEBUG_LOG)
-    endif()
-
-    list(APPEND COVERAGE_SRC ${SRC_DIR}/main/main.cpp)
-
-    if (BUILD_COVERAGE)
-        target_compile_options(${PROJECT_NAME} PRIVATE ${COVERAGE_COMPILE_FLAGS})
-        if (CMAKE_VERSION VERSION_GREATER "3.13" OR
-            CMAKE_VERSION VERSION_EQUAL "3.13")
-            target_link_options(${PROJECT_NAME} PRIVATE ${COVERAGE_LINK_FLAGS})
-        else()
-            set_target_properties(${PROJECT_NAME} PROPERTIES
-                LINK_FLAGS "${COVERAGE_LINK_FLAGS}"
-            )
-        endif()
-    endif()
+    add_subdirectory(${SRC_DIR}/main ${CMAKE_BINARY_DIR}/main)
 endif()
 
 if(1) # PROJECT METADATA BLOCK
@@ -176,8 +150,6 @@ if(1) # ACTIVATE BUILD TESTS BLOCK
 endif()
 
 if(1) # CPACK BLOCK
-    install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
-
     set(CPACK_GENERATOR DEB)
 
     set(CPACK_PACKAGE_NAME async)
