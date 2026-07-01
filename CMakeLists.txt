@@ -40,8 +40,6 @@ if(1) # CORE LIBRARY BLOCK
 
     set(${CORE_SRC}
         ${SRC_DIR}/app/app.cpp
-        ${SRC_DIR}/async/async.cpp
-        ${SRC_DIR}/async/async_context.cpp
         ${SRC_DIR}/format/bulk_format.cpp
         ${SRC_DIR}/core/bulk_processor.cpp
         ${SRC_DIR}/io/bulk_writer.cpp
@@ -62,6 +60,10 @@ if(1) # CORE LIBRARY BLOCK
 
     if(${CORE_SRC})
         add_library(${CORE_NAME} ${${CORE_SRC}})
+
+        set_target_properties(${CORE_NAME} PROPERTIES
+            POSITION_INDEPENDENT_CODE ON
+        )
 
         target_include_directories(${CORE_NAME} PUBLIC
             ${PROJECT_INCLUDE_DIR}
@@ -89,12 +91,19 @@ if(1) # CORE LIBRARY BLOCK
     endif()
 endif()
 
+if(1) # ASYNC LIBRARY BLOCK
+    add_subdirectory(${SRC_DIR}/async ${CMAKE_BINARY_DIR}/async)
+endif()
+
 if(1) # MAIN APPLICATION BLOCK
     add_executable(${PROJECT_NAME}
         ${SRC_DIR}/app/main.cpp
     )
 
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${CORE_NAME})
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        ${CORE_NAME}
+        async
+    )
 
     target_compile_options(${PROJECT_NAME} PRIVATE ${WARN_FLAGS})
 

@@ -52,6 +52,7 @@ add_unit_test(app_test
 add_unit_test(async_context_test
     ${UNIT_TEST_DIR}/async_context_test.cpp
 )
+target_link_libraries(async_context_test PRIVATE async)
 
 add_unit_test(bulk_format_test
     ${UNIT_TEST_DIR}/bulk_format_test.cpp
