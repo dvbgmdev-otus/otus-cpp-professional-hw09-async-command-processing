@@ -16,6 +16,7 @@ if(1) # PROJECT CONFIG BLOCK
     set(PROJECT_INCLUDE_DIR
         ${SRC_DIR}
         ${SRC_DIR}/app
+        ${SRC_DIR}/async
         ${SRC_DIR}/cli
         ${SRC_DIR}/core
         ${SRC_DIR}/format
@@ -39,6 +40,7 @@ if(1) # CORE LIBRARY BLOCK
 
     set(${CORE_SRC}
         ${SRC_DIR}/app/app.cpp
+        ${SRC_DIR}/async/async_context.cpp
         ${SRC_DIR}/format/bulk_format.cpp
         ${SRC_DIR}/core/bulk_processor.cpp
         ${SRC_DIR}/io/bulk_writer.cpp
@@ -48,6 +50,7 @@ if(1) # CORE LIBRARY BLOCK
 
     set(COVERAGE_SRC
         ${SRC_DIR}/app/app.cpp
+        ${SRC_DIR}/async/async_context.cpp
         ${SRC_DIR}/format/bulk_format.cpp
         ${SRC_DIR}/core/bulk_processor.cpp
         ${SRC_DIR}/io/bulk_writer.cpp

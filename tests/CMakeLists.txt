@@ -49,6 +49,10 @@ add_unit_test(app_test
     ${UNIT_TEST_DIR}/app_test.cpp
 )
 
+add_unit_test(async_context_test
+    ${UNIT_TEST_DIR}/async_context_test.cpp
+)
+
 add_unit_test(bulk_format_test
     ${UNIT_TEST_DIR}/bulk_format_test.cpp
 )
