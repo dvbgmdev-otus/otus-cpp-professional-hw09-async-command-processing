@@ -1,20 +1,15 @@
 #include "app.h"
 
-#include <ctime>
 #include <cstddef>
 #include <istream>
-#include <utility>
 
 #include "async.h"
-#include "async_internal.h"
 #include "cli_args.h"
 
 namespace {
 
 constexpr int EXIT_SUCCESS_CODE = 0;
 constexpr int EXIT_ERROR_CODE = 1;
-
-std::time_t current_time() { return std::time(nullptr); }
 
 void process_input(std::istream& input, std::size_t block_size) {
     constexpr std::size_t BUFFER_SIZE = 4096;
@@ -33,18 +28,13 @@ void process_input(std::istream& input, std::size_t block_size) {
 
 }  // namespace
 
-int run_app(int argc, const char* const argv[], AppStreams streams, CommandReader::Clock clock) {
-    if (!clock) {
-        clock = current_time;
-    }
-
+int run_app(int argc, const char* const argv[], AppStreams streams) {
     const CliArgsParseResult cli_args = parse_cli_args(argc, argv);
     if (!cli_args.success) {
         streams.error << cli_args.error << '\n';
         return EXIT_ERROR_CODE;
     }
 
-    async::detail::ScopedSettings async_settings(std::move(clock));
     process_input(streams.input, cli_args.block_size);
 
     return EXIT_SUCCESS_CODE;

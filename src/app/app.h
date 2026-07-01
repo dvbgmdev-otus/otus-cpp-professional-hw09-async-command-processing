@@ -8,8 +8,6 @@
 
 #include <iosfwd>
 
-#include "command_reader.h"
-
 /**
  * @brief Набор потоков ввода-вывода приложения.
  * @ingroup app_group
@@ -38,14 +36,9 @@ struct AppStreams {
  * @param argc Количество аргументов командной строки.
  * @param argv Массив аргументов командной строки.
  * @param streams Потоки ввода-вывода приложения.
- * @param clock Источник времени для команд. Если не задан, используется
- * системное время.
  * @return Код завершения приложения: 0 при успехе, ненулевое значение при
  * ошибке запуска.
  */
-int run_app(int argc,
-            const char* const argv[],
-            AppStreams streams,
-            CommandReader::Clock clock = CommandReader::Clock{});
+int run_app(int argc, const char* const argv[], AppStreams streams);
 
 #endif  // APP_H
