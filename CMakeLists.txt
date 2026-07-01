@@ -40,6 +40,7 @@ if(1) # CORE LIBRARY BLOCK
 
     set(${CORE_SRC}
         ${SRC_DIR}/app/app.cpp
+        ${SRC_DIR}/async/async.cpp
         ${SRC_DIR}/async/async_context.cpp
         ${SRC_DIR}/format/bulk_format.cpp
         ${SRC_DIR}/core/bulk_processor.cpp
@@ -50,6 +51,7 @@ if(1) # CORE LIBRARY BLOCK
 
     set(COVERAGE_SRC
         ${SRC_DIR}/app/app.cpp
+        ${SRC_DIR}/async/async.cpp
         ${SRC_DIR}/async/async_context.cpp
         ${SRC_DIR}/format/bulk_format.cpp
         ${SRC_DIR}/core/bulk_processor.cpp
