@@ -17,11 +17,12 @@ if(1) # PROJECT CONFIG BLOCK
         ${SRC_DIR}
         ${SRC_DIR}/app
         ${SRC_DIR}/async
-        ${SRC_DIR}/cli
         ${SRC_DIR}/core
-        ${SRC_DIR}/format
-        ${SRC_DIR}/io
-        ${SRC_DIR}/utils
+        ${SRC_DIR}/core/cli
+        ${SRC_DIR}/core/format
+        ${SRC_DIR}/core/io
+        ${SRC_DIR}/core/utils
+        ${SRC_DIR}/main
     )
 
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -39,22 +40,22 @@ if(1) # CORE LIBRARY BLOCK
     set(CORE_SRC ${CORE_NAME}_SRC)
 
     set(${CORE_SRC}
-        ${SRC_DIR}/format/bulk_format.cpp
+        ${SRC_DIR}/core/format/bulk_format.cpp
         ${SRC_DIR}/core/bulk_processor.cpp
-        ${SRC_DIR}/io/bulk_writer.cpp
-        ${SRC_DIR}/cli/cli_args.cpp
-        ${SRC_DIR}/io/command_reader.cpp
+        ${SRC_DIR}/core/io/bulk_writer.cpp
+        ${SRC_DIR}/core/cli/cli_args.cpp
+        ${SRC_DIR}/core/io/command_reader.cpp
     )
 
     set(COVERAGE_SRC
         ${SRC_DIR}/app/app.cpp
         ${SRC_DIR}/async/async.cpp
         ${SRC_DIR}/async/async_context.cpp
-        ${SRC_DIR}/format/bulk_format.cpp
+        ${SRC_DIR}/core/format/bulk_format.cpp
         ${SRC_DIR}/core/bulk_processor.cpp
-        ${SRC_DIR}/io/bulk_writer.cpp
-        ${SRC_DIR}/cli/cli_args.cpp
-        ${SRC_DIR}/io/command_reader.cpp
+        ${SRC_DIR}/core/io/bulk_writer.cpp
+        ${SRC_DIR}/core/cli/cli_args.cpp
+        ${SRC_DIR}/core/io/command_reader.cpp
     )
 
     if(${CORE_SRC})
@@ -131,7 +132,7 @@ endif()
 
 if(1) # MAIN APPLICATION BLOCK
     add_executable(${PROJECT_NAME}
-        ${SRC_DIR}/app/main.cpp
+        ${SRC_DIR}/main/main.cpp
     )
 
     target_link_libraries(${PROJECT_NAME} PRIVATE
@@ -144,7 +145,7 @@ if(1) # MAIN APPLICATION BLOCK
         target_compile_definitions(${PROJECT_NAME} PRIVATE ENABLE_DEBUG_LOG)
     endif()
 
-    list(APPEND COVERAGE_SRC ${SRC_DIR}/app/main.cpp)
+    list(APPEND COVERAGE_SRC ${SRC_DIR}/main/main.cpp)
 
     if (BUILD_COVERAGE)
         target_compile_options(${PROJECT_NAME} PRIVATE ${COVERAGE_COMPILE_FLAGS})
