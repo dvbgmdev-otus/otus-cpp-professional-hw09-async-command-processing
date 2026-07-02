@@ -41,54 +41,41 @@ FetchContent_MakeAvailable(googletest)
 include(GoogleTest)
 
 # --- Добавление тестов ---
-add_unit_test(empty_test
+add_unit_test(empty_test SOURCES
     ${UNIT_TEST_DIR}/empty_test.cpp
 )
 
-add_executable(app_test
+add_unit_test(app_test SOURCES
     ${UNIT_TEST_DIR}/app_test.cpp
+    LIBRARIES ${APP_NAME}
 )
 
-target_link_libraries(app_test PRIVATE
-    ${APP_NAME}
-    GTest::gtest_main
-)
-
-set_target_properties(app_test PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${TEST_BIN_DIR}
-)
-
-configure_compile_target(app_test)
-configure_link_target(app_test)
-
-gtest_discover_tests(app_test)
-
-add_unit_test(async_context_test
+add_unit_test(async_context_test SOURCES
     ${UNIT_TEST_DIR}/async_context_test.cpp
+    LIBRARIES async
 )
-target_link_libraries(async_context_test PRIVATE async)
 
-add_unit_test(blocking_queue_test
+add_unit_test(blocking_queue_test SOURCES
     ${UNIT_TEST_DIR}/blocking_queue_test.cpp
 )
 
-add_unit_test(bulk_format_test
+add_unit_test(bulk_format_test SOURCES
     ${UNIT_TEST_DIR}/bulk_format_test.cpp
 )
 
-add_unit_test(bulk_processor_test
+add_unit_test(bulk_processor_test SOURCES
     ${UNIT_TEST_DIR}/bulk_processor_test.cpp
 )
 
-add_unit_test(bulk_writer_test
+add_unit_test(bulk_writer_test SOURCES
     ${UNIT_TEST_DIR}/bulk_writer_test.cpp
 )
 
-add_unit_test(cli_args_test
+add_unit_test(cli_args_test SOURCES
     ${UNIT_TEST_DIR}/cli_args_test.cpp
 )
 
-add_unit_test(command_reader_test
+add_unit_test(command_reader_test SOURCES
     ${UNIT_TEST_DIR}/command_reader_test.cpp
 )
 
