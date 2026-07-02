@@ -35,20 +35,23 @@ if(1) # PROJECT CONFIG BLOCK
 
 endif()
 
-if(1) # CORE LIBRARY BLOCK
-    set(CORE_NAME ${PROJECT_NAME}_CORE)
-
+if(1) # COVERAGE CONFIG BLOCK
     set(COVERAGE_SRC
         ${SRC_DIR}/app/app.cpp
-        ${SRC_DIR}/async/async.cpp
         ${SRC_DIR}/async/async_context.cpp
-        ${SRC_DIR}/core/format/bulk_format.cpp
-        ${SRC_DIR}/core/bulk_processor.cpp
-        ${SRC_DIR}/core/io/bulk_writer.cpp
+        ${SRC_DIR}/async/async_runtime.cpp
+        ${SRC_DIR}/async/async.cpp
         ${SRC_DIR}/core/cli/cli_args.cpp
+        ${SRC_DIR}/core/format/bulk_format.cpp
+        ${SRC_DIR}/core/io/bulk_writer.cpp
         ${SRC_DIR}/core/io/command_reader.cpp
+        ${SRC_DIR}/core/bulk_processor.cpp
+        ${SRC_DIR}/main/main.cpp
     )
+endif()
 
+if(1) # CORE LIBRARY BLOCK
+    set(CORE_NAME ${PROJECT_NAME}_CORE)
     add_subdirectory(${SRC_DIR}/core ${CMAKE_BINARY_DIR}/core)
 endif()
 
