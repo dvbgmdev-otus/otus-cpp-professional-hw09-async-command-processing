@@ -31,6 +31,7 @@ if(1) # PROJECT CONFIG BLOCK
     include(warnings_config)
     include(build_type_config)
     include(options_config)
+    include(target_config)
 
 endif()
 

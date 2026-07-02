@@ -24,15 +24,7 @@ if(${CORE_SRC})
         ${PROJECT_INCLUDE_DIR}
     )
 
-    target_compile_options(${CORE_NAME} PRIVATE ${WARN_FLAGS})
-
-    if(BUILD_COVERAGE)
-        target_compile_options(${CORE_NAME} PRIVATE ${COVERAGE_COMPILE_FLAGS})
-    endif()
-
-    if(ENABLE_DEBUG_LOG)
-        target_compile_definitions(${CORE_NAME} PRIVATE ENABLE_DEBUG_LOG)
-    endif()
+    configure_compile_target(${CORE_NAME})
 else()
     add_library(${CORE_NAME} INTERFACE)
 
