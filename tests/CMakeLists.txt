@@ -45,11 +45,6 @@ add_unit_test(empty_test SOURCES
     ${UNIT_TEST_DIR}/empty_test.cpp
 )
 
-add_unit_test(app_test SOURCES
-    ${UNIT_TEST_DIR}/app_test.cpp
-    LIBRARIES ${APP_NAME}
-)
-
 add_unit_test(async_context_test SOURCES
     ${UNIT_TEST_DIR}/async_context_test.cpp
     LIBRARIES async

@@ -15,7 +15,6 @@ if(1) # PROJECT CONFIG BLOCK
 
     set(PROJECT_INCLUDE_DIR
         ${SRC_DIR}
-        ${SRC_DIR}/app
         ${SRC_DIR}/async
         ${SRC_DIR}/core
         ${SRC_DIR}/core/cli
@@ -37,7 +36,6 @@ endif()
 
 if(1) # COVERAGE CONFIG BLOCK
     set(COVERAGE_SRC
-        ${SRC_DIR}/app/app.cpp
         ${SRC_DIR}/async/async_context.cpp
         ${SRC_DIR}/async/async_runtime.cpp
         ${SRC_DIR}/async/async.cpp
@@ -57,11 +55,6 @@ endif()
 
 if(1) # ASYNC LIBRARY BLOCK
     add_subdirectory(${SRC_DIR}/async ${CMAKE_BINARY_DIR}/async)
-endif()
-
-if(1) # APP LIBRARY BLOCK
-    set(APP_NAME ${PROJECT_NAME}_APP)
-    add_subdirectory(${SRC_DIR}/app ${CMAKE_BINARY_DIR}/app)
 endif()
 
 if(1) # MAIN APPLICATION BLOCK

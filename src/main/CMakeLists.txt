@@ -8,7 +8,8 @@ add_executable(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    ${APP_NAME}
+    ${CORE_NAME}
+    async
 )
 
 configure_compile_target(${PROJECT_NAME})
