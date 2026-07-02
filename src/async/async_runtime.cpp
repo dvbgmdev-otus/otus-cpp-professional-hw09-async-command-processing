@@ -35,12 +35,8 @@ AsyncRuntime::~AsyncRuntime() {
 void AsyncRuntime::publish(const CommandBlock& block) {
     add_pending_tasks(2);
 
-    if (!m_console_queue.push(block)) {
-        complete_pending_task();
-    }
-    if (!m_file_queue.push(block)) {
-        complete_pending_task();
-    }
+    m_console_queue.push(block);
+    m_file_queue.push(block);
 }
 
 void AsyncRuntime::wait() {

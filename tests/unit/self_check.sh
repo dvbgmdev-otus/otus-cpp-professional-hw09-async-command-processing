@@ -39,6 +39,20 @@ run_case() {
     check_output "$name" "$expected" "$output"
 }
 
+run_error_case() {
+    local name="$1"
+    local expected="$2"
+    local output
+
+    if output="$("$BINARY" 2>&1)"; then
+        log_error "Test failed: $name"
+        log_error "Expected non-zero exit code"
+        exit 1
+    fi
+
+    check_output "$name" "$expected" "$output"
+}
+
 main() {
     if [[ ! -x "$BINARY" ]]; then
         log_error "Binary not found or not executable: $BINARY"
@@ -54,6 +68,10 @@ main() {
         "dynamic blocks and ignored unfinished block" \
         $'cmd1\ncmd2\n{\ncmd3\ncmd4\n}\n{\ncmd5\ncmd6\n{\ncmd7\ncmd8\n}\ncmd9\n}\n{\ncmd10\ncmd11\n' \
         $'bulk: cmd1, cmd2\nbulk: cmd3, cmd4\nbulk: cmd5, cmd6, cmd7, cmd8, cmd9'
+
+    run_error_case \
+        "missing block size argument" \
+        "Expected one argument: block size"
 
     log_ok "Self-check passed"
 }
