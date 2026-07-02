@@ -46,7 +46,7 @@ jobs:
     needs: build
     concurrency:
       group: pages
-      cancel-in-progress: false
+      cancel-in-progress: true
 
     permissions:
       contents: read
