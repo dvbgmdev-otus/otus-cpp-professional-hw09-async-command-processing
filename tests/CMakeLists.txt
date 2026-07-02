@@ -58,12 +58,8 @@ set_target_properties(app_test PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${TEST_BIN_DIR}
 )
 
-target_compile_options(app_test PRIVATE ${WARN_FLAGS})
-
-if (BUILD_COVERAGE)
-    target_compile_options(app_test PRIVATE ${COVERAGE_COMPILE_FLAGS})
-    target_link_options(app_test PRIVATE ${COVERAGE_LINK_FLAGS})
-endif()
+configure_compile_target(app_test)
+configure_link_target(app_test)
 
 gtest_discover_tests(app_test)
 
