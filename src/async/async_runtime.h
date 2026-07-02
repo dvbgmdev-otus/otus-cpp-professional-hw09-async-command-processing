@@ -25,6 +25,8 @@ class AsyncRuntime {
 public:
     /**
      * @brief Возвращает общий runtime async-библиотеки.
+     *
+     * @return Ссылка на singleton runtime.
      */
     static AsyncRuntime& instance();
 
@@ -41,19 +43,53 @@ public:
     void wait();
 
 private:
+    /**
+     * @brief Создаёт runtime и запускает worker-потоки.
+     */
     AsyncRuntime();
+
+    /**
+     * @brief Останавливает очереди и дожидается завершения worker-потоков.
+     */
     ~AsyncRuntime();
 
     AsyncRuntime(const AsyncRuntime&) = delete;
     AsyncRuntime& operator=(const AsyncRuntime&) = delete;
 
+    /**
+     * @brief Основной цикл worker-потока консольного вывода.
+     */
     void run_console_worker();
+
+    /**
+     * @brief Основной цикл worker-потока файлового вывода.
+     */
     void run_file_worker();
 
+    /**
+     * @brief Записывает блок команд в консольный поток.
+     *
+     * @param block Готовый блок команд.
+     */
     void write_console(const CommandBlock& block);
+
+    /**
+     * @brief Записывает блок команд в log-файл.
+     *
+     * @param block Готовый блок команд.
+     */
     void write_file(const CommandBlock& block);
 
+    /**
+     * @brief Увеличивает счётчик ожидающих задач вывода.
+     *
+     * @param count Количество добавляемых задач.
+     */
     void add_pending_tasks(std::size_t count);
+
+    /**
+     * @brief Отмечает завершение одной задачи вывода.
+     */
     void complete_pending_task();
 
     /// Очередь блоков для консольного вывода.
