@@ -993,6 +993,7 @@ WARN_LOGFILE           =
 
 INPUT                  = mainpage.dox \
                          groups.dox \
+                         ../README.md \
                          ../src \
                          namespaces.dox
 
