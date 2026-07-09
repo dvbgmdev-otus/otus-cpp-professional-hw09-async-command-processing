@@ -78,9 +78,9 @@ void AsyncRuntime::add_pending_tasks(std::size_t count) {
 }
 
 void AsyncRuntime::complete_pending_task() {
-    {
-        std::lock_guard<std::mutex> lock(m_pending_mutex);
-        --m_pending_tasks;
-    }
+    std::unique_lock<std::mutex> lock(m_pending_mutex);
+    --m_pending_tasks;
+    lock.unlock();
+
     m_pending_condition.notify_all();
 }
