@@ -16,10 +16,10 @@ AsyncRuntime::AsyncRuntime() : m_output(&std::cout) {
 }
 
 AsyncRuntime::~AsyncRuntime() {
-    wait();
-
     m_console_queue.close();
     m_file_queue.close();
+
+    wait();
 
     if (m_log_thread.joinable()) {
         m_log_thread.join();
